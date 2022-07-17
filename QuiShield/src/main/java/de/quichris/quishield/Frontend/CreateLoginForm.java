@@ -65,7 +65,8 @@ class CreateLoginForm extends JFrame  implements ActionListener
                 try {
                     Response res = http.post("v1/login/",urlParameters);
                     if (res.code() == 200) {
-
+                        setVisible(false);
+                        dispose();
 
                         NewPage page = new NewPage();
 
