@@ -10,13 +10,18 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.common.hash.Hashing;
+import com.squareup.okhttp.Response;
+import de.quichris.quishield.Frontend.network.HttpClientTest;
 
 
-
-class CreateLoginForm extends JFrame implements ActionListener
+class CreateLoginForm extends JFrame  implements ActionListener
 {
+
+    HttpClientTest http = new HttpClientTest();
 
     JButton b1;
     JPanel newPanel;
@@ -24,7 +29,7 @@ class CreateLoginForm extends JFrame implements ActionListener
     final JTextField  textField1, textField2;
 
 
-    CreateLoginForm()
+    CreateLoginForm() throws Exception
     {
 
 
@@ -43,7 +48,7 @@ class CreateLoginForm extends JFrame implements ActionListener
 
 
         JToggleButton tb = new JToggleButton("SUBMIT");
-        tb.addActionListener(new ActionListener() {
+        tb.addActionListener(new ActionListener()  {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -54,24 +59,32 @@ class CreateLoginForm extends JFrame implements ActionListener
                                     .toString();
 
 
-                if (userValue.equals("test1@gmail.com") && passValue.equals("test")) {
+                Map<String,String> urlParameters = new HashMap<String, String>();
+                urlParameters.put("email", userValue);
+                urlParameters.put("password", password);
+                try {
+                    Response res = http.post("v1/login/",urlParameters);
+                    if (res.code() == 200) {
 
 
-                    NewPage page = new NewPage();
+                        NewPage page = new NewPage();
 
 
-                    page.setVisible(true);
+                        page.setVisible(true);
 
 
-                    JLabel wel_label = new JLabel("Welcome: "+userValue);
-                    page.getContentPane().add(wel_label);
-                }
-                else{
-                    fieldError.setText("<html><font color='red'>Please enter valid<br>username and password</font></html>");
-                    System.out.println("Please enter valid username and password");
-                }
+                        JLabel wel_label = new JLabel("Welcome: "+userValue);
+                        page.getContentPane().add(wel_label);
+                    }
+                    else {
+                        fieldError.setText("<html><font color='red'>Please enter valid<br>username and password</font></html>");
+                    }
+                } catch (Exception ex) {}
+
+
+
             }
-        });
+        }) ;
 
 
 
